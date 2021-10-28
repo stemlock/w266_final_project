@@ -3,7 +3,10 @@ import random
 
 def preprocess_unk(text, vocab):
     
-    '''Preprocesses a given text and replaces all vocab words with [UNK] token'''
+    '''
+    Preprocesses a given text and replaces all vocab words with [UNK] token.
+    If no replacements are found, return an empty string.
+    '''
     
     # Compile the regex object using the provided vocab
     regex = re.compile('|'.join(r'\b%s\b' %s for s in map(re.escape, vocab)))    
@@ -11,6 +14,10 @@ def preprocess_unk(text, vocab):
     
     # Substitute all words in vocab with [UNK]
     new_text = regex.sub("[UNK]", text)
+    
+    # If no vocab words were found, set new_text to an empty string
+    if new_text == text:
+        new_text = ''
     
     return new_text
 
@@ -77,9 +84,10 @@ def preprocess_gendered_swap(text, vocab_map, regex):
             # Increment the counter of where to start the next search
             prev = i
             i = match.end() + prev
+            
         # If a word to swap is not found, append the rest of the subtext
         else:
             new_text += text[i:]
             i = len(text)
-
+    
     return new_text
