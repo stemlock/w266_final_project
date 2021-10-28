@@ -14,7 +14,7 @@ import numpy as np
 
 from helper import preprocessing as pre
 
-def parse_and_join_data(cwd, paths):
+def parse_and_join_data(cwd, path):
     
     '''
     Parse raw data and join all reviews in a single dataframe.
@@ -22,17 +22,18 @@ def parse_and_join_data(cwd, paths):
     
     data_list = []
     
-    for path in paths:
-        for p in Path(path).glob('*.txt'):
-            with open(os.path.join(cwd, p)) as f:
-                file_name = re.split('_|\.', p.name)
-                review_id = file_name[0]
-                review_score = int(file_name[1])
-                # append review id, review score, review text, and binary label (0 = negative)
-                if review_score < 5:
-                    data_list.append([review_id, review_score, f.read(), 0])
-                elif review_score > 5:
-                    data_list.append([review_id, review_score, f.read(), 1])
+    split_dir = Path(os.path.join(cwd,path))
+
+    for label_dir in ["pos", "neg"]:
+        for text_file in (split_dir/label_dir).iterdir():
+            file_name = re.split('_|\.', str(text_file.name))
+            
+            review_id = file_name[0]
+            review_score = int(file_name[1])
+            text = text_file.read_text()
+            label = 0 if label_dir == "neg" else 1
+            
+            data_list.append([review_id, review_score, text, label])
                     
     return pd.DataFrame(data_list, columns = ['review_id', 'review_score', 'review_text', 'label'])
 
@@ -116,14 +117,14 @@ def main(args):
     
     # Save to csv
     new_df_path = os.path.join(cwd, args.output)                  
-    new_df.to_csv(new_df_path)
+    new_df.to_csv(new_df_path, index=False)
     print(f"Saved new dataset to {new_df_path}")
     
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--data_paths", nargs='+', help="paths to data files")
+    parser.add_argument("-d", "--data_paths", help="path to data files")
     parser.add_argument("-v", "--vocab_path", help="path to vocab files")
     parser.add_argument("-o", "--output", help="filepath to save output file (requires .csv filename)")
     args = parser.parse_args()
