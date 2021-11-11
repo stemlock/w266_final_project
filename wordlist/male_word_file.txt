@@ -154,7 +154,7 @@ paramour
 host
 monks
 menservants
-mr.
+mr
 headmasters
 lads
 congressman
@@ -230,8 +230,8 @@ heirs
 horseman
 hubbies
 masculinism
-mr.
-mr.
+mr
+mr
 papas
 patriarchy
 patriarchies

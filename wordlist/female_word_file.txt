@@ -154,7 +154,7 @@ mistress
 hostess
 nuns
 maids
-mrs.
+mrs
 headmistresses
 lasses
 congresswoman
@@ -230,7 +230,7 @@ heiresses
 horsewoman
 wives
 feminism
-ms.
+ms
 miss
 mamas
 matriarchy
