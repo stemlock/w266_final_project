@@ -14,7 +14,7 @@ import numpy as np
 
 from helper import preprocessing as pre
 
-def parse_and_join_data(cwd, paths):
+def parse_and_join_data(cwd, path):
     
     '''
     Parse raw data and join all reviews in a single dataframe.
@@ -22,17 +22,18 @@ def parse_and_join_data(cwd, paths):
     
     data_list = []
     
-    for path in paths:
-        for p in Path(path).glob('*.txt'):
-            with open(os.path.join(cwd, p)) as f:
-                file_name = re.split('_|\.', p.name)
-                review_id = file_name[0]
-                review_score = int(file_name[1])
-                # append review id, review score, review text, and binary label (0 = negative)
-                if review_score < 5:
-                    data_list.append([review_id, review_score, f.read(), 0])
-                elif review_score > 5:
-                    data_list.append([review_id, review_score, f.read(), 1])
+    split_dir = Path(os.path.join(cwd,path))
+
+    for label_dir in ["pos", "neg"]:
+        for text_file in (split_dir/label_dir).iterdir():
+            file_name = re.split('_|\.', str(text_file.name))
+            
+            review_id = file_name[0]
+            review_score = int(file_name[1])
+            text = text_file.read_text()
+            label = 0 if label_dir == "neg" else 1
+            
+            data_list.append([review_id, review_score, text, label])
                     
     return pd.DataFrame(data_list, columns = ['review_id', 'review_score', 'review_text', 'label'])
 
@@ -66,9 +67,9 @@ def main(args):
     cwd = os.getcwd()
     
     # Parse the data and create the df
-    if args.data_paths:
+    if args.data_path:
         print("Parsing data...")
-        df = parse_and_join_data(cwd, args.data_paths)
+        df = parse_and_join_data(cwd, args.data_path)
     else:
         raise Exception("No data paths provided. Please use command line argument -d/--data_paths \
                         and specify comma delimited paths to data files.")
@@ -94,17 +95,18 @@ def main(args):
     
     # Convert all text to neutral reviews
     print("Processing neutral review dataset...")
-    df['neutral_review_text'] = df['review_text'].apply(pre.preprocess_unk, vocab=tot_vocab)
+    df[['neutral_review_text', 'neutral_sub_count']] = df.apply(pre.preprocess_unk, result_type='expand', axis=1, 
+                                                                vocab=tot_vocab)
     
     # Convert all text to female gendered reviews
     print("Processing female gendered review dataset...")
-    df['female_review_text'] = df['review_text'].apply(pre.preprocess_gendered_swap,
-                                                       vocab_map=m_map, regex=m_regex)
+    df[['female_review_text', 'female_sub_count']] = df.apply(pre.preprocess_gendered_swap, result_type='expand', axis=1, 
+                                                            vocab_map=m_map, regex=m_regex)
     
     # Convert all text to male gendered reviews
     print("Processing male gendered review dataset...")
-    df['male_review_text'] = df['review_text'].apply(pre.preprocess_gendered_swap,
-                                                     vocab_map=f_map, regex=f_regex)
+    df[['male_review_text', 'male_sub_count']] = df.apply(pre.preprocess_gendered_swap, result_type='expand', axis=1,
+                                                        vocab_map=f_map, regex=f_regex)
     
     # Reorder the columns
     cols = df.columns.to_list()
@@ -116,14 +118,14 @@ def main(args):
     
     # Save to csv
     new_df_path = os.path.join(cwd, args.output)                  
-    new_df.to_csv(new_df_path)
+    new_df.to_csv(new_df_path, index=False)
     print(f"Saved new dataset to {new_df_path}")
     
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--data_paths", nargs='+', help="paths to data files")
+    parser.add_argument("-d", "--data_path", help="path to data files")
     parser.add_argument("-v", "--vocab_path", help="path to vocab files")
     parser.add_argument("-o", "--output", help="filepath to save output file (requires .csv filename)")
     args = parser.parse_args()

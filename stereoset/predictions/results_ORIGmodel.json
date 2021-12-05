@@ -1,0 +1,74 @@
+{
+  "ORIGmodel.json": {
+    "intrasentence": {
+      "gender": {
+        "Count": 765.0,
+        "LM Score": 26.10733573994444,
+        "SS Score": 44.43389525128656,
+        "ICAT Score": 23.201012431177222
+      },
+      "profession": {
+        "Count": 2430.0,
+        "LM Score": 29.641247308611305,
+        "SS Score": 51.53605072906651,
+        "ICAT Score": 28.730638117834644
+      },
+      "race": {
+        "Count": 2886.0,
+        "LM Score": 30.034695876859473,
+        "SS Score": 50.30131247553786,
+        "ICAT Score": 29.853699305525804
+      },
+      "religion": {
+        "Count": 237.0,
+        "LM Score": 24.321839080459768,
+        "SS Score": 57.47126436781608,
+        "ICAT Score": 20.68754128682785
+      },
+      "overall": {
+        "Count": 2106.0,
+        "LM Score": 29.171206904634232,
+        "SS Score": 50.29976603300852,
+        "ICAT Score": 28.996316165196774
+      }
+    },
+    "intersentence": {
+      "gender": {
+        "Count": 726.0,
+        "LM Score": 35.321475022561984,
+        "SS Score": 54.19500185804534,
+        "ICAT Score": 32.35800195559099
+      },
+      "profession": {
+        "Count": 2481.0,
+        "LM Score": 38.996330334752656,
+        "SS Score": 53.549980337299594,
+        "ICAT Score": 36.22760621644842
+      },
+      "race": {
+        "Count": 2928.0,
+        "LM Score": 39.032703314528796,
+        "SS Score": 52.64842473840125,
+        "ICAT Score": 36.9651997732313
+      },
+      "religion": {
+        "Count": 234.0,
+        "LM Score": 39.70977011494253,
+        "SS Score": 56.27969348659004,
+        "ICAT Score": 34.72246642004668
+      },
+      "overall": {
+        "Count": 2123.0,
+        "LM Score": 38.57482645488689,
+        "SS Score": 53.32445316128679,
+        "ICAT Score": 36.01002237980613
+      }
+    },
+    "overall": {
+      "Count": 4229.0,
+      "LM Score": 33.8659965665935,
+      "SS Score": 51.7544737977414,
+      "ICAT Score": 32.67765649438373
+    }
+  }
+}
